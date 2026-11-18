@@ -1,0 +1,43 @@
+# CyberGuard — backend edition
+
+A beginner-friendly Flask application with:
+- Account registration and sign-in
+- Password hashing (Werkzeug PBKDF2)
+- Server-side SQLite database by default
+- Persistent learning progress per user
+- Client enquiries saved per signed-in user
+- CSRF token validation on POST forms
+- Protected dashboard and logout
+- HTTP-only, SameSite session cookies
+
+## Run locally
+1. Install Python 3.10 or newer.
+2. In this folder run:
+   `python -m venv .venv`
+3. Activate the environment:
+   - Windows: `.venv\Scripts\activate`
+   - macOS/Linux: `source .venv/bin/activate`
+4. Install packages: `pip install -r requirements.txt`
+5. Set a strong secret key:
+   - macOS/Linux: `export SECRET_KEY="a-long-random-secret"`
+   - PowerShell: `$env:SECRET_KEY="a-long-random-secret"`
+6. Run: `python app.py`
+7. Open http://127.0.0.1:5000
+
+## Deploy online with persistent storage
+This project includes `render.yaml` configured for Render with a persistent disk mounted at `/var/data`, so the SQLite database survives ordinary redeploys/restarts while the disk remains attached. In Render:
+1. Create a GitHub repository and upload the contents of this folder.
+2. In Render choose **New → Blueprint** and connect that repository.
+3. Review the `render.yaml` service and disk settings, then deploy.
+4. Render generates `SECRET_KEY` and sets secure session cookies.
+5. Open the generated `onrender.com` address and register a test account.
+
+Hosting providers change free-tier and persistent-disk availability. Check the current Render pricing and disk terms before choosing a plan. If the plan does not support persistent disks, use a managed PostgreSQL database instead and set `DATABASE_URL`.
+
+## Database
+- Local default: `instance/cyberguard.db`
+- Production blueprint: `/var/data/cyberguard.db`
+- If `DATABASE_URL` is set, SQLAlchemy uses that database instead (PostgreSQL recommended for a multi-user production service).
+
+## Important production work still recommended
+This is a functional starter, not a fully hardened commercial service. Before public launch, add email verification, password reset, rate limiting on login/registration, admin roles, backups/restore testing, monitoring, privacy policy/terms, and a managed production database. Never collect WhatsApp one-time codes or other people's credentials. Use explicit written authorization for all security assessments.
